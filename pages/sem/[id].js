@@ -1,8 +1,14 @@
-import { getAllSeminars, getSeminarById } from "../../lib/contentful";
+import { getSeminarById } from "../../lib/contentful";
 import { documentToReactComponents } from "@contentful/rich-text-react-renderer";
 import Link from "next/link";
+import Script from "next/script";
+import dynamic from "next/dynamic";
 
-export default function Sem({ seminars, content }) {
+const WidgetBot = dynamic(() => import("@widgetbot/react-embed"), {
+  ssr: false,
+});
+
+export default function Sem({ id, seminars, content }) {
   let html = documentToReactComponents(content);
   return (
     <div>
@@ -19,23 +25,27 @@ export default function Sem({ seminars, content }) {
           </li>
         </ol>
       </nav>
-      <div className="card">
+      <div className="card mb-4">
         <h5 className="card-header">{seminars.title}</h5>
         <div className="card-body">{html}</div>
+      </div>
+
+      <div className="card">
+        <h5 className="card-header">讨论区</h5>
+        <div className="card-body">
+          <WidgetBot
+            server="982942779384688669"
+            channel={seminars.channel}
+            style={{
+              width: "100%",
+              height: "90vh",
+            }}
+          />
+        </div>
       </div>
     </div>
   );
 }
-
-// export async function getStaticPaths() {
-//   let seminars = await getAllSeminars();
-
-//   const paths = seminars.map((sem) => ({
-//     params: { id: sem.sys.id },
-//   }));
-
-//   return { paths, fallback: false };
-// }
 
 export async function getServerSideProps({ params, res }) {
   res.setHeader(
@@ -46,10 +56,12 @@ export async function getServerSideProps({ params, res }) {
   let sem = await getSeminarById(params.id);
   return {
     props: {
+      id: params.id,
       seminars: {
         title: sem.title,
         date: sem.startAt,
         host: sem.hostBy,
+        channel: sem.channelId,
       },
       content: sem.content?.json,
     },
