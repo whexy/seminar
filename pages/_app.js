@@ -1,7 +1,6 @@
 import Head from "next/head";
 import Script from "next/script";
 import Nav from "../components/navbar";
-import Foot from "../components/footbar";
 
 function MyApp({ Component, pageProps }) {
   return (
@@ -14,6 +13,12 @@ function MyApp({ Component, pageProps }) {
           crossOrigin="anonymous"
         />
         <title>SysSecSem</title>
+        <link
+          rel="icon"
+          type="image/x-icon"
+          sizes="16x16 32x32"
+          href="favicon.ico"
+        ></link>
       </Head>
 
       <Script
@@ -21,12 +26,9 @@ function MyApp({ Component, pageProps }) {
         crossOrigin="anonymous"
       />
 
-      <div className="d-flex flex-column min-vh-100">
-        <Nav />
-        <div className="container mt-3">
-          <Component {...pageProps} />
-        </div>
-        <Foot />
+      <Nav />
+      <div className="container mt-3">
+        <Component {...pageProps} />
       </div>
     </>
   );

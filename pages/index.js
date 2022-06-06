@@ -6,14 +6,31 @@ export default function Home({ seminars }) {
     <>
       <h2>系统安全讨论班 (Alpha Test)</h2>
       <div className="row">
-        <div className="col-md-6">
+        <div className="col-md-6 mb-4">
           <p className="lead">
             <strong>系统安全讨论班</strong>
             是一个自由的学习小组。小组成员通过阅读与讨论的形式在一段时间内集中学习一个特定主题。
           </p>
+          <div className="card">
+            <div className="card-header">讨论班日程</div>
+            <ul className="list-group list-group-flush">
+              {seminars.map((seminar) => (
+                <SemListItem
+                  key={seminar.sys.id}
+                  id={seminar.sys.id}
+                  name={seminar.title}
+                  date={seminar.startAt}
+                  host={seminar.hostBy}
+                  status={seminar.status}
+                />
+              ))}
+            </ul>
+          </div>
+        </div>
+        <div className="col-md-6">
           <h5>参加讨论班</h5>
           <p>
-            讨论班欢迎对系统安全有兴趣的同好！无需注册登录，在页面右侧（或下方）的讨论班日程表中找到你喜欢的话题，点击即可进入讨论班。
+            讨论班欢迎对系统安全有兴趣的同好！无需注册登录，在页面左侧（或上方）的讨论班日程表中找到你喜欢的话题，点击即可进入讨论班。
           </p>
           <h5>主理人</h5>
           <p>
@@ -64,28 +81,21 @@ export default function Home({ seminars }) {
             </table>
           </figure>
         </div>
-        <div className="col-md-6">
-          <div className="card">
-            <div className="card-header">讨论班日程</div>
-            <ul className="list-group list-group-flush">
-              {seminars.map((seminar) => (
-                <SemListItem
-                  key={seminar.sys.id}
-                  id={seminar.sys.id}
-                  name={seminar.title}
-                  date={seminar.startAt}
-                  host={seminar.hostBy}
-                />
-              ))}
-            </ul>
-          </div>
-        </div>
       </div>
     </>
   );
 }
 
-const SemListItem = ({ id, name, date, host, active = false }) => {
+const SemListItem = ({ id, name, date, host, status }) => {
+  const statusBadge =
+    status === "ongoing" ? (
+      <span className="badge text-bg-success">Ongoing</span>
+    ) : status === "end" ? (
+      <span className="badge text-bg-secondary">End</span>
+    ) : (
+      <span className="badge text-bg-primary">Upcoming</span>
+    );
+
   return (
     <Link href={`/sem/${id}`}>
       <li
@@ -101,11 +111,7 @@ const SemListItem = ({ id, name, date, host, active = false }) => {
             </div>
           </div>
         </div>
-        {active ? (
-          <span className="badge bg-primary">Upcoming</span>
-        ) : (
-          <span className="badge bg-secondary">End</span>
-        )}
+        {statusBadge}
       </li>
     </Link>
   );
