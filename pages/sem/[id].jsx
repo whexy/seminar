@@ -2,7 +2,12 @@ import { getSeminarById } from "../../lib/contentful";
 import { documentToReactComponents } from "@contentful/rich-text-react-renderer";
 import Link from "next/link";
 import dynamic from "next/dynamic";
-import { UserIcon, CalendarIcon, FlagIcon } from "@heroicons/react/solid";
+import {
+  UserIcon,
+  CalendarIcon,
+  FlagIcon,
+  LinkIcon,
+} from "@heroicons/react/solid";
 
 const WidgetBot = dynamic(() => import("@widgetbot/react-embed"), {
   ssr: false,
@@ -61,6 +66,13 @@ export default function Sem({ id, seminars, content }) {
                   />{" "}
                   {statusBadge}
                 </li>
+                <li className="list-group-item d-flex align-items-center">
+                  <LinkIcon
+                    className="me-2"
+                    style={{ width: "1.2rem", height: "1.2rem" }}
+                  />{" "}
+                  <Link href={seminars.link}>{seminars.link}</Link>
+                </li>
               </ul>
             </div>
           </div>
@@ -112,6 +124,7 @@ export async function getServerSideProps({ params, res }) {
         host: sem.hostBy,
         channel: sem.channelId,
         status: sem.status,
+        link: sem.link,
       },
       content: sem.content?.json,
     },
